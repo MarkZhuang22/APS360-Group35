@@ -58,10 +58,12 @@ A lite Single Shot MultiBox Detector (SSD) model with approximately 1,043,822 pa
 - `Batch Normalization`: Batch Normalization is applied throughout the model to improve training stability and accelerate convergence.
 ## Output
 The output of this network includes:
-Anchors: The model generates anchor boxes at different scales and aspect ratios, which serve as reference points for object detection.
-cls_preds: These are the predictions for the class labels of the detected objects.
-bbox_preds: These are the predictions for the bounding boxes that enclose the detected objects.
+- `Anchors`: The model generates anchor boxes at different scales and aspect ratios, which serve as reference points for object detection.
+- `cls_preds`: These are the predictions for the class labels of the detected objects.
+- `bbox_preds`: These are the predictions for the bounding boxes that enclose the detected objects.
 ## Loss Function
 To train the model, a loss function is utilized that considers both the classification and bounding box predictions. In this case, the chosen loss functions are CrossEntropyLoss for the classification task and L1Loss (mean absolute error) for the bounding box prediction task. These loss functions enable the model to optimize both the accuracy of object classification and the precision of bounding box localization.
+## Perfomance
+Currently, our model has achieved a low classification error (2.86e-03) and bounding box Mean Absolute Error (MAE) (3.95e-03) on a dataset of only 1000 samples. 
 
 
