@@ -54,40 +54,26 @@ class FaceMaskDataset(Dataset):
         :return: a tensor of images, lists of varying-size tensors of bounding boxes, labels, and difficulties
         """
 
-        images = list()
-        boxes = list()
-        labels = list()
-
-        for b in batch:
-            images.append(b[0])
-            boxes.append(b[1])
-            labels.append(b[2])
-
+        images, boxes, labels = zip(*batch)
         images = torch.stack(images, dim=0)
-
-        # return images, boxes, labels, difficulties  # tensor (N, 3, 300, 300), 3 lists of N tensors each
         return images, boxes, labels
     
-
+##########################################################################
 def calculate_anchor_sizes(ground_truth_boxes, num_anchors_per_layer):
     anchor_sizes = []
     
     for num_anchors in num_anchors_per_layer:
-        # Extract width and height from ground truth boxes
+
         widths = ground_truth_boxes[:, 2] - ground_truth_boxes[:, 0]
         heights = ground_truth_boxes[:, 3] - ground_truth_boxes[:, 1]
         
-        # Stack width and height into a feature tensor
         features = torch.stack((widths, heights), dim=1)
         
-        # Convert the feature tensor to NumPy array
         features_np = features.numpy()
         
-        # Apply k-means clustering
         kmeans = KMeans(n_clusters=num_anchors)
         kmeans.fit(features_np)
         
-        # Get the centroids as the final anchor sizes
         anchor_sizes.append(kmeans.cluster_centers_)
     
     return anchor_sizes
