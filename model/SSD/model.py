@@ -6,7 +6,7 @@ from math import sqrt
 from itertools import product as product
 
 from utils import *
-from base_model import VGGBase
+from base_model import *
 from aux_conv import AuxiliaryConvolutions
 from prediction_conv import PredictionConvolutions
 from ft_aux_conv import FtAuxiliaryConvolutions
@@ -27,7 +27,10 @@ class SSD300(nn.Module):
         self.fmap_dims = config.fmap_dims
         self.obj_scales = config.obj_scales
         self.aspect_ratios = config.aspect_ratios
-        self.base = VGGBase()
+        if config.base_model == 'vgg':
+            self.base = VGGBase()
+        elif config.base_model =='resnet':
+            self.base = ResNetBase()
         self.aux_convs = AuxiliaryConvolutions()
         self.pred_convs = PredictionConvolutions(config=config)
 
@@ -363,7 +366,7 @@ class MultiBoxLoss(nn.Module):
                                     sum = 0
                                     fmaps = list(fmap_dims.keys())
                                     aspects = list(aspect_ratios.keys())
-                                    for l,fmap,aspects in enumerate(zip(fmaps,aspect_ratios)):
+                                    for l,(fmap,aspects) in enumerate(zip(fmaps,aspect_ratios)):
                                         cur_size = fmap_dims[fmap]*fmap_dims[fmap]*(len(aspect_ratios[aspects])+1)
                                         if(condidate_idx<(sum+cur_size)):
                                             prior_loc = l

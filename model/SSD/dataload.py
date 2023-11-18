@@ -1,7 +1,6 @@
 import os
 import sys
 import glob
-import requests
 from pdb import set_trace
 
 import cv2
@@ -52,12 +51,12 @@ def data_loader(dataloader, i):
     path = dataloader.dataset.imgs[i][0]
     
     path = path[:-3]+'xml'
-    imgsize, boxlabel, bndbox, difficult = loadxml(path)
+    imgsize, boxlabel, bndbox = loadxml(path)
     # set_trace()
     if (bndbox == []) | (imgsize == []) | (boxlabel == []) | (0 in imgsize):
         return [None, None, None, None]             
 
-    return img, bndbox, boxlabel, difficult
+    return img, bndbox, boxlabel
 
 
 def retrieve_gt(path, split, limit=0):

@@ -24,8 +24,9 @@ class PredictionConvolutions(nn.Module):
 
         self.n_classes = config.n_classes
         n_classes = config.n_classes
-        self.attention = config.attention 
-        if(config.attention == 'SE'):
+        self.need_attention = config.chanel_attention
+
+        if(config.chanel_attention == 'SE'):
             self.CA1 = SEBlock(512)
             if config.mode == BASIC:
                 self.CA2 = SEBlock(1024)
@@ -36,7 +37,7 @@ class PredictionConvolutions(nn.Module):
             self.CA4 = SEBlock(256)
             self.CA5 = SEBlock(256)
             self.CA6 = SEBlock(256)
-        elif (config.attention == 'CBAM'):
+        elif (config.chanel_attention == 'CBAM'):
             self.CA1 = CBAM(512)
             if config.mode == BASIC:
                 self.CA2 = CBAM(1024)
@@ -107,7 +108,9 @@ class PredictionConvolutions(nn.Module):
         :return: 8732 locations and class scores (i.e. w.r.t each prior box) for each image
         """
         batch_size = conv4_3_feats.size(0)
-        if(self.attention != 'NONE'):
+        #channel =0
+        #if(channel !=0):
+        if(self.need_attention!= 'None'):
             conv4_3_feats = self.CA1(conv4_3_feats)
             conv7_feats = self.CA2(conv7_feats)
             conv8_2_feats = self.CA3(conv8_2_feats)

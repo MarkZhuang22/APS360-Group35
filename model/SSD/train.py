@@ -6,7 +6,6 @@ import torch.utils.data
 from matplotlib import pyplot as plt
 import numpy as np
 import argparse
-# from model import SSD300, MultiBoxLoss
 from model import SSD300, MultiBoxLoss
 from config import Config
 from datasets import FaceMaskDataset
@@ -235,10 +234,9 @@ if __name__ == '__main__':
     
     print("loading training images")
     
-    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "train", limit=args.limit)
+    images, bnd_boxes, labels = retrieve_gt(args.dest, "train", limit=args.limit)
     print("%d images has been retrieved" %len(images))
     # set_trace()
-    
     
     print("finish loading images")
     
@@ -246,10 +244,9 @@ if __name__ == '__main__':
 
     print("loading val images")
     
-    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "val", limit=args.limit)
+    images, bnd_boxes, labels = retrieve_gt(args.dest, "val", limit=args.limit)
     print("%d images has been retrieved" %len(images))
     # set_trace()
-    
     
     print("finish loading images")
 

@@ -150,10 +150,10 @@ class VGGBase(nn.Module):
 
 
 
-class ResNetBackbone(nn.Module):
+class ResNetBase(nn.Module):
     def __init__(self, pretrained=True):
-        super(ResNetBackbone, self).__init__()
-        self.resnet = models.resnet50(pretrained=False)  # Set pretrained=False
+        super(ResNetBase, self).__init__()
+        self.resnet = torchvision.models.resnet50(pretrained=False)  # Set pretrained=False
 
         # Remove the fully connected layer and average pooling at the end of ResNet-50
         self.resnet = nn.Sequential(*list(self.resnet.children())[:-2])

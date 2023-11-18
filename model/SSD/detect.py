@@ -3,7 +3,7 @@ from utils import *
 from PIL import Image, ImageDraw, ImageFont
 import argparse
 import sys
-import cv2
+
 
 # Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def detect(original_image, min_score, max_overlap, top_k, suppress=None):
@@ -85,7 +85,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="FaceMaskDetection")
 
 	parser.add_argument('--limit', type=int, default=0, help='limit to number of pictures')
-	parser.add_argument('--dataset_path', type=str, default="./FaceMaskDataset/FaceMaskDataset/val", help='limit to number of pictures')
+	parser.add_argument('--dataset_path', type=str, default="./FaceMaskDataset/val", help='limit to number of pictures')
 	parser.add_argument('--image', type=str, default='nothing', help='image')
 	parser.add_argument("--checkpoint", type=str, default='./checkpoint_ssd300.pth.tar', help="checkpoint path")
 	args = parser.parse_args()
