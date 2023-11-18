@@ -19,7 +19,7 @@ def load_data(data_dir = "./", batch_size = 1):
         image_dataset = datasets.ImageFolder(os.path.join(data_dir)) 
         data_loader = DataLoader(image_dataset, batch_size=batch_size, shuffle=False)
     except:
-        print("Please download data with download_dataset.py first")
+        print("Please download data first")
         sys.exit()
     return data_loader
 
