@@ -13,10 +13,33 @@ from datasets import FaceMaskDataset
 # Good formatting when printing the APs for each class and mAP
 pp = PrettyPrinter()
 
-
 # Ignore warnings
 import warnings
 warnings.filterwarnings("ignore")
+
+def plot_precision_recall_curve(precisions_dict, filename, key):
+    fig = plt.figure(figsize=(10, 3))
+    x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    thresholds = ["0.50", "0.70", "0.90"]
+
+    for i, threshold in enumerate(thresholds):
+        plt.subplot(int(f"13{i+1}"))
+        if(key == "no_mask"):
+            precisions_dict[threshold][0] = precisions_dict[threshold][0].cpu().numpy()
+        else:
+            precisions_dict[threshold][1] = precisions_dict[threshold][1].cpu().numpy()
+        label_ = "threshold_" + threshold
+        plt.step(x, precisions_dict[threshold][0], label=label_)
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
+        plt.legend()
+        print("Plotted figure for threshold", threshold)
+
+    fig.tight_layout()
+    print("Saving to", filename)
+    fig.savefig(filename)
+    print("Saved!")
+    plt.close()
 
 # Heavily modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def evaluate(test_loader, model):
@@ -70,7 +93,7 @@ def evaluate(test_loader, model):
 
         # Calculate mAP
         # APs, mAP = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, true_difficulties)
-        
+    
         for threshold in np.arange(0.5, 0.95, 0.05):  
             precisions, APs, mAP, _, _, _ = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold)
             threshold = "%.2f" %threshold
@@ -78,93 +101,46 @@ def evaluate(test_loader, model):
             mAPs[threshold] = mAP 
             precisions_dict[threshold] = precisions
             APs_dict[threshold] = APs
+        
 
 
-    print("\nMean Average Precision (mAP@.5): %.3f" % mAPs["0.50"])
-    print("\nMean Average Precision (mAP@.7): %.3f" % mAPs["0.70"])
-    print("\nMean Average Precision (mAP@.9): %.3f" % mAPs["0.90"])
-    mean_mAPs = sum(mAPs.values())/len(mAPs)
-    print("\nMean Average Precision (mAP@[.5:.95]): %.3f" % mean_mAPs)
-    
-    print("\nAPs[No Mask] (AP@.5): %.3f, APs[Mask] (AP@.5): %.3f" %(APs_dict["0.50"]["no_mask"], APs_dict["0.50"]["mask"]))
-    print("\nAPs[No Mask] (AP@.7): %.3f, APs[Mask] (AP@.7): %.3f" %(APs_dict["0.70"]["no_mask"], APs_dict["0.70"]["mask"]))
-    print("\nAPs[No Mask] (AP@.9): %.3f, APs[Mask] (AP@.9): %.3f" %(APs_dict["0.90"]["no_mask"], APs_dict["0.90"]["mask"]))
+    mAP_50, mAP_70, mAP_90 = mAPs["0.50"], mAPs["0.70"], mAPs["0.90"]
+    mean_mAPs = sum(mAPs.values()) / len(mAPs)
 
-    mean_APs = [0, 0]
-    j = 0
-    for i in ["no_mask", "mask"]:
-        for item, values in APs_dict.items():
-            mean_APs[j] += values[i]
-        mean_APs[j] /= len(APs_dict)
-        j += 1
-    print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))
+    AP_50_no_mask, AP_50_with_mask = APs_dict["0.50"]["no_mask"], APs_dict["0.50"]["mask"]
+    AP_70_no_mask, AP_70_with_mask = APs_dict["0.70"]["no_mask"], APs_dict["0.70"]["mask"]
+    AP_90_no_mask, AP_90_with_mask = APs_dict["0.90"]["no_mask"], APs_dict["0.90"]["mask"]
+
+    print(f"\nMean Average Precision (mAP@0.50): {mAP_50:.3f}")
+    print(f"\nMean Average Precision (mAP@0.70): {mAP_70:.3f}")
+    print(f"\nMean Average Precision (mAP@0.90): {mAP_90:.3f}")
+
+    print(f"\nMean Average Precision (mAP@[0.50:0.95]): {mean_mAPs:.3f}")
+
+    print(f"\nAPs[No Mask] (AP@0.50): {AP_50_no_mask:.3f}, APs[With Mask] (AP@0.50): {AP_50_with_mask:.3f}")
+    print(f"\nAPs[No Mask] (AP@0.70): {AP_70_no_mask:.3f}, APs[With Mask] (AP@0.70): {AP_70_with_mask:.3f}")
+    print(f"\nAPs[No Mask] (AP@0.90): {AP_90_no_mask:.3f}, APs[With Mask] (AP@0.90): {AP_90_with_mask:.3f}")
+
+    mean_APs = [sum(values[i] for values in APs_dict.values()) / len(APs_dict) for i in ["no_mask", "mask"]]
+    print(f"\nAPs[No Mask] (AP@[0.50:0.95]): {mean_APs[0]:.3f}, APs[With Mask] (AP@[0.50:0.95]): {mean_APs[1]:.3f}")
 
     _, _, _, cumul_tps, cumul_fps, n_objects_class = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, 0.5)
 
     print("n_objects (no_mask): ", n_objects_class[0])
     print("tp (no_mask): ", cumul_tps[0][-1])
     print("fp (no_mask): ", cumul_fps[0][-1])
-    
-    print("n_objects (mask): ", n_objects_class[1])
-    print("tp (mask): ", cumul_tps[1][-1])
-    print("fp (mask): ", cumul_fps[1][-1])
-    
-    fig = plt.figure(figsize=(10,3))
-    i = 1
-    #set_trace()
-    for threshold in ["0.50", "0.70", "0.90"]:
-        
-        
-        x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        sub = "13"+str(i)
-        plt.subplot(sub)
-        precisions_dict[threshold][0] = precisions_dict[threshold][0].cpu().numpy()
-        label_ = "threshold_" + threshold
-        plt.step(x, precisions_dict[threshold][0], label=label_)
-        plt.xlabel("Recall")
-        plt.ylabel("Precision")
-        plt.legend()
-            
-        print("plotted figure threshold "+threshold)
-        i = i + 1
-    # set_trace()
-    figure_name = "P_R_curve_face.png"
-    fig.tight_layout()
-    print("Saving to ", figure_name)
-    fig.savefig(figure_name)
-    print("Saved!")
-    plt.close()
-    
-    fig = plt.figure(figsize=(10,3))
-    i = 1
-    #set_trace()
-    for threshold in ["0.50", "0.70", "0.90"]:
-        
-        x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        sub = "13"+str(i)
-        plt.subplot(sub)
-        precisions_dict[threshold][1] = precisions_dict[threshold][1].cpu().numpy()
-        label_ = "threshold_" + threshold
-        plt.step(x, precisions_dict[threshold][1], label=label_)
-        plt.xlabel("Recall")
-        plt.ylabel("Precision")
-        plt.legend()
-            
-        print("plotted figure threshold "+threshold)
-        i = i + 1
-    # set_trace()
-    figure_name = "P_R_curve_facemask.png"
-    fig.tight_layout()
-    print("Saving to ", figure_name)
-    fig.savefig(figure_name)
-    print("Saved!")
-    plt.close()
-      
+
+    print("n_objects (with mask): ", n_objects_class[1])
+    print("tp (with mask): ", cumul_tps[1][-1])
+    print("fp (with mask): ", cumul_fps[1][-1])
+
+    plot_precision_recall_curve(precisions_dict, "P_R_curve_no_mask.png","no_mask")
+    plot_precision_recall_curve(precisions_dict, "P_R_curve_with_mask.png","mask")
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="FaceMaskDetection")
-    parser.add_argument('--dest', type=str, default="./FaceMaskDataset", help='path to dataset.')
+    parser.add_argument('--dest', type=str, default="./", help='path to dataset.')
     parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
     parser.add_argument('--checkpoint', type=str, default="./checkpoint_ssd300.pth.tar", help='limit number of images.')
     
@@ -185,7 +161,7 @@ if __name__ == '__main__':
     #train(config, train_dataset)
     print("loading test images")
 
-    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "test", limit=args.limit)
+    images, bnd_boxes, labels = retrieve_gt(args.dest, "test", limit=args.limit)
     print("%d images has been retrieved" %len(images))
     # set_trace()
     print("finish loading images")
