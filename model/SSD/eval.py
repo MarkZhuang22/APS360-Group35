@@ -10,10 +10,6 @@ from dataload import retrieve_gt
 from matplotlib import pyplot as plt
 from datasets import FaceMaskDataset
 
-# Good formatting when printing the APs for each class and mAP
-pp = PrettyPrinter()
-
-# Ignore warnings
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -25,11 +21,12 @@ def plot_precision_recall_curve(precisions_dict, filename, key):
     for i, threshold in enumerate(thresholds):
         plt.subplot(int(f"13{i+1}"))
         if(key == "no_mask"):
-            precisions_dict[threshold][0] = precisions_dict[threshold][0].cpu().numpy()
+            precision = precisions_dict[threshold][0]
         else:
-            precisions_dict[threshold][1] = precisions_dict[threshold][1].cpu().numpy()
+            precision = precisions_dict[threshold][1]
+        #precisions_dict[threshold][0] = precision.cpu().numpy()
         label_ = "threshold_" + threshold
-        plt.step(x, precisions_dict[threshold][0], label=label_)
+        plt.step(x, precision, label=label_)
         plt.xlabel("Recall")
         plt.ylabel("Precision")
         plt.legend()

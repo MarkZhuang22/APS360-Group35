@@ -299,7 +299,7 @@ class MultiBoxLoss(nn.Module):
         #mode = config.mode
         fmap_dims = config.fmap_dims
         aspect_ratios = config.aspect_ratios
-        herustic =config.herustic
+        heuristic =config.heuristic
 
         batch_size = predicted_locs.size(0)
         n_priors = self.priors_cxcy.size(0)
@@ -332,9 +332,9 @@ class MultiBoxLoss(nn.Module):
             
             #print((max_indices[0]))
             
-            #########################################################
+            ###########################HEURISTIC##############################
             # Create a mask to filter priors with the maximum IoU
-            if(herustic > 0):
+            if(heuristic > 0):
                 mask = torch.eq(overlap, max_iou.unsqueeze(1))
                 # Get the indices of priors with the maximum IoU
                 max_indices = []
@@ -355,7 +355,7 @@ class MultiBoxLoss(nn.Module):
                         ratio_list = [1, -1000, 2, 0.5, 3, 0.33]
                         gt_truth_ratios = torch.abs(torch.tensor(ratio_list) - truth_ratio).argmin()
                         candiddate_list =[]
-                        if herustic != 2:
+                        if heuristic != 2:
                             for condidate_idx in max_indices[j]:
                                 prior_xy = self.priors_xy[condidate_idx][0]
                                 prior_ratio = (prior_xy[2]-prior_xy[0]) / (prior_xy[3]-prior_xy[1])

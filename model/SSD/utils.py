@@ -6,6 +6,7 @@ import torchvision.transforms.functional as FT
 from pdb import set_trace
 from torch import nn
 import torch.nn.functional as F
+from augmentations import *
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -355,6 +356,22 @@ def transform(image, boxes, labels, split):
     new_boxes = boxes
     new_labels = labels
 
+    if split == 'train':
+        new_image = photometric_distort(new_image)
+
+        new_image = FT.to_tensor(new_image)
+
+        if random.random() < 0.5:
+            new_image, new_boxes = expand(new_image, boxes, filler=mean)
+
+        new_image, new_boxes, new_labels = random_crop(new_image, new_boxes, new_labels)
+        
+        new_image = FT.to_pil_image(new_image)
+
+        if random.random() < 0.5:
+            new_image, new_boxes = flip(new_image, new_boxes)
+
+        
     # Resize image to (300, 300) - this also converts absolute boundary coordinates to their fractional form
     new_image, new_boxes = resize(new_image, new_boxes, dims=(300, 300))
 

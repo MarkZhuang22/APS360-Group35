@@ -27,16 +27,18 @@ class Config():
         self.weight_decay = 5e-4  # weight decay
         #self.grad_clip = None  # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
         self.epochs = 30
-        self.herustic = 1
+        self.heuristic = 1
         self.mode = FEATURETRANSFER # BASIC or FEATURETRANSFER
+        self.net_size = 'large'
         self.base_model = 'vgg'
-        self.chanel_attention = 'None' #se or CBAM or None
+        self.chanel_attention = 'SE' #SE or CBAM or NONE
           
         self.fmap_dims = {'conv4_3': 38, 'conv7': 19, 'conv8_2': 10, 'conv9_2': 5, 'conv10_2': 3, 'conv11_2': 1}
         self.obj_scales = {'conv4_3': 0.1, 'conv7': 0.2, 'conv8_2': 0.375, 'conv9_2': 0.55, 'conv10_2': 0.725, 'conv11_2': 0.9}
 
         n_boxes_basic = {'conv4_3': 4, 'conv7': 6, 'conv8_2': 6, 'conv9_2': 6, 'conv10_2': 4, 'conv11_2': 4}
         n_boxes_other = {'conv4_3': 6, 'conv7': 6, 'conv8_2': 6, 'conv9_2': 6, 'conv10_2': 4, 'conv11_2': 4}
+
         aspect_ratios_basic = {'conv4_3': [1., 2., 0.5], 'conv7': [1., 2., 3., 0.5, .333],
                               'conv8_2': [1., 2., 3., 0.5, .333], 'conv9_2': [1., 2., 3., 0.5, .333],
                               'conv10_2': [1., 2., 0.5], 'conv11_2': [1., 2., 0.5]}
@@ -44,6 +46,7 @@ class Config():
                               'conv8_2': [1., 2., 3., 0.5, .333], 'conv9_2': [1., 2., 3., 0.5, .333],
                               'conv10_2': [1., 2., 0.5], 'conv11_2': [1., 2., 0.5]}
 
-        self.n_boxes = n_boxes_basic if self.mode == BASIC else n_boxes_other
-        self.aspect_ratios = aspect_ratios_basic if self.mode == BASIC else aspect_ratios_other
+
+        self.n_boxes = n_boxes_basic if self.net_size == 'small' else n_boxes_other
+        self.aspect_ratios = aspect_ratios_basic if self.net_size == 'small'  else aspect_ratios_other
 

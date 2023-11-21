@@ -110,7 +110,7 @@ class PredictionConvolutions(nn.Module):
         batch_size = conv4_3_feats.size(0)
         #channel =0
         #if(channel !=0):
-        if(self.need_attention!= 'None'):
+        if(self.need_attention == 'SE' or self.need_attention == 'CBAM'):
             conv4_3_feats = self.CA1(conv4_3_feats)
             conv7_feats = self.CA2(conv7_feats)
             conv8_2_feats = self.CA3(conv8_2_feats)
