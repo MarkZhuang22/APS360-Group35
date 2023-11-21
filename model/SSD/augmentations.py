@@ -89,7 +89,7 @@ def find_jaccard_overlap(set_1, set_2):
     return intersection / union  # (n1, n2)
 
 
-# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
+# slightly modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def expand(image, boxes, filler):
     """
     Perform a zooming out operation by placing the image in a larger canvas of filler material.
@@ -102,6 +102,7 @@ def expand(image, boxes, filler):
     :return: expanded image, updated bounding box coordinates
     """
     # Calculate dimensions of proposed expanded (zoomed-out) image
+    random.seed(123)
     original_h = image.size(1)
     original_w = image.size(2)
     max_scale = 4
@@ -266,6 +267,7 @@ def photometric_distort(image):
     :param image: image, a PIL Image
     :return: distorted image
     """
+    random.seed(123)
     new_image = image
 
     distortions = [FT.adjust_brightness,

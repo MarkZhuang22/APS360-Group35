@@ -27,11 +27,12 @@ class Config():
         self.weight_decay = 5e-4  # weight decay
         #self.grad_clip = None  # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
         self.epochs = 30
-        self.heuristic = 1
-        self.mode = FEATURETRANSFER # BASIC or FEATURETRANSFER
+        self.heuristic = 0
+        self.mode = FEATURETRANSFER_2 # BASIC or FEATURETRANSFER
+        #self.mode = FEATURETRANSFER_2
         self.net_size = 'large'
         self.base_model = 'vgg'
-        self.chanel_attention = 'SE' #SE or CBAM or NONE
+        self.chanel_attention = 'NONE' #SE or CBAM or NONE
           
         self.fmap_dims = {'conv4_3': 38, 'conv7': 19, 'conv8_2': 10, 'conv9_2': 5, 'conv10_2': 3, 'conv11_2': 1}
         self.obj_scales = {'conv4_3': 0.1, 'conv7': 0.2, 'conv8_2': 0.375, 'conv9_2': 0.55, 'conv10_2': 0.725, 'conv11_2': 0.9}

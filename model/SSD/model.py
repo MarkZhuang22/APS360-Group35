@@ -37,7 +37,7 @@ class SSD300(nn.Module):
 
         if (config.mode == FEATURETRANSFER):
             self.ft_bn = nn.BatchNorm2d(768, affine=True)
-            self.ft_aux_convs = FtAuxiliaryConvolutions()
+            self.ft_aux_convs = FtAuxiliaryConvolutions(768)
 
             self.ft_3 = nn.Sequential(
                 nn.Conv2d(1024, 256, kernel_size=1, padding=0),
@@ -61,6 +61,26 @@ class SSD300(nn.Module):
                 nn.ReLU(),
                 InterpolateModule(size=(38, 38), mode='bilinear')
                 )
+            
+        elif (config.mode == FEATURETRANSFER_2):
+            self.ft_bn = nn.BatchNorm2d(1024, affine=True)
+            self.ft_aux_convs = FtAuxiliaryConvolutions(1024)
+
+            self.ft_3 = nn.Sequential(
+                nn.Conv2d(1024, 256, kernel_size=1, padding = 0),
+                nn.ReLU(),
+                InterpolateModule(size=(38, 38), mode='bilinear')
+                )
+            
+            self.ft_1 = nn.Sequential(
+                nn.Conv2d(512, 512, kernel_size=1, padding = 0),
+                nn.ReLU()   #512
+                )
+            self.ft_2 = nn.Sequential(
+                nn.Conv2d(512, 256, kernel_size=1, padding = 0),
+                nn.ReLU(),
+                InterpolateModule(size=(38, 38), mode='bilinear')
+                )
         else: 
             # Since lower level features (conv4_3_feats) have considerably larger scales, we take the L2 norm and rescale
             # Rescale factor is initially set at 20, but is learned for each channel during back-prop
@@ -79,7 +99,7 @@ class SSD300(nn.Module):
         """
         # Run VGG base network convolutions (lower level feature map generators)
         #mode = 'baisc'
-        conv4_3_feats, conv7_feats = self.base(image)  # (N, 512, 38, 38), (N, 1024, 19, 19)
+        conv4_3_feats, conv7_feats, conv5_3_feats = self.base(image)  # (N, 512, 38, 38), (N, 1024, 19, 19)
         if self.mode  == FEATURETRANSFER:
             conv_ft1 = self.ft_1(conv4_3_feats)
             conv_ft2 = self.ft_2(conv7_feats)
@@ -87,6 +107,16 @@ class SSD300(nn.Module):
             FT = torch.cat([conv_ft1,conv_ft2,conv_ft_3], 1)
         
             FT_n = self.ft_bn(FT) # (N, 768, 38, 38)
+            convft1_feats, convft2_feats, conv1ft3_feats, convft4_feats,convft5_feats,convft6_feats = \
+                                                self.ft_aux_convs(FT_n)
+            locs, classes_scores = self.pred_convs(convft1_feats, convft2_feats, conv1ft3_feats, convft4_feats,convft5_feats,convft6_feats)
+        elif self.mode  == FEATURETRANSFER_2:
+            conv_ft1 = self.ft_1(conv4_3_feats)
+            conv_ft2 = self.ft_2(conv5_3_feats)
+            conv_ft_3 = self.ft_3(conv7_feats)
+            FT = torch.cat([conv_ft1,conv_ft2,conv_ft_3], 1)
+        
+            FT_n = self.ft_bn(FT) # (N, 1024, 38, 38)
             convft1_feats, convft2_feats, conv1ft3_feats, convft4_feats,convft5_feats,convft6_feats = \
                                                 self.ft_aux_convs(FT_n)
             locs, classes_scores = self.pred_convs(convft1_feats, convft2_feats, conv1ft3_feats, convft4_feats,convft5_feats,convft6_feats)

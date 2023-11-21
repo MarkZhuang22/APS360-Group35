@@ -213,7 +213,7 @@ if __name__ == '__main__':
         start_epoch = 0
         model = SSD300(config=config)
         # set_trace()
-        # Initialize the optimizer, with twice the default learning rate for biases, as in the original Caffe repo
+
         biases = list()
         not_biases = list()
         for param_name, param in model.named_parameters():
@@ -250,6 +250,6 @@ if __name__ == '__main__':
     
     print("finish loading images")
 
-    val_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
+    val_dataset = FaceMaskDataset(images, bnd_boxes, labels, "test")
     
     train(config, train_dataset, val_dataset, model, optimizer, start_epoch)

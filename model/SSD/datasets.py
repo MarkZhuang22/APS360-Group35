@@ -21,7 +21,7 @@ class FaceMaskDataset(Dataset):
         """
         self.split = split.lower()
 
-        assert self.split in {'train', 'test'}
+        assert self.split in {'train', 'val', 'test'}
         
         self.images = images
         self.bnd_boxes = bnd_boxes

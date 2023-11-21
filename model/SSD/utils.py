@@ -12,6 +12,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 BASIC = 'basic'
 FEATURETRANSFER = 'FT'
+FEATURETRANSFER_2 = 'FT2'
 
 # Label map
 labels = ('no_mask', 'mask')
@@ -333,7 +334,7 @@ def resize(image, boxes, dims=(300, 300), return_percent_coords=True):
     return new_image, new_boxes
 
 
-# Heavily modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
+#  modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def transform(image, boxes, labels, split):
     """
     Apply the transformations above.
@@ -345,7 +346,8 @@ def transform(image, boxes, labels, split):
     :param split: one of 'TRAIN' or 'TEST', since different sets of transformations are applied
     :return: transformed image, transformed bounding box coordinates, transformed labels, transformed difficulties
     """
-    assert split in {'train', 'test'}
+    random.seed(123)
+    assert split in {'train', 'val','test'}
 
     # Mean and standard deviation of ImageNet data that our base VGG from torchvision was trained on
     # see: https://pytorch.org/docs/stable/torchvision/models.html

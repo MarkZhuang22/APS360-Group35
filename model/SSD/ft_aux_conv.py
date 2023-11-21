@@ -9,11 +9,11 @@ class FtAuxiliaryConvolutions(nn.Module):
 	Additional convolutions to produce higher-level feature maps.
 	"""
 
-	def __init__(self):
+	def __init__(self,input_size):
 		super(FtAuxiliaryConvolutions, self).__init__()
 
 		self.convf1 = nn.Sequential(
-			nn.Conv2d(768, 256, kernel_size=1, padding=0),
+			nn.Conv2d(input_size, 256, kernel_size=1, padding=0),
 			nn.ReLU(),
 			nn.Conv2d(256, 512, kernel_size=3, padding=1),
 			nn.ReLU()
