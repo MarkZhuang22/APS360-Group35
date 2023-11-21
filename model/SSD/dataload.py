@@ -36,7 +36,7 @@ def data_loader(dataloader, i):
     path = path[:-3]+'xml'
     boxlabel, bndbox = loadxml(path)
     if not all([bndbox, boxlabel]):
-        return [None, None, None, None]
+        return [None, None, None]
     return img, bndbox, boxlabel
 
 def retrieve_gt(path, split, limit=0):
@@ -45,15 +45,15 @@ def retrieve_gt(path, split, limit=0):
     dataloader = load_data(data_dir=path)
     images, bndboxes, boxlabels = [], [], []
 
-    start_index = {"train": 0, "val": 1360, "test": 1660}[split]
+    start_index = {"train": 0, "val": 6120, "test": 1660}[split]
     end_index = start_index + (limit if limit else { "train": 6000, "val": 1000, "test": 1000 }[split])
     if(split == 'val' or split == 'test' ):
-        end_index = start_index+ 300 # only load 300 
+        end_index = start_index+ 1800 # only load 300 
     for i in range(start_index, end_index):
         img, bndbox, boxlabel = data_loader(dataloader, i)
         if img is None:
             continue
-        boxlabel = [2 if label == "with_mask" else 1 for label in boxlabel]
+        boxlabel = [2 if label == "with_mask" or label == "face_mask" else 1 for label in boxlabel]
         images.append(img)
         bndboxes.append(bndbox)
         boxlabels.append(boxlabel)
