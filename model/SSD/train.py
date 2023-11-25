@@ -47,6 +47,7 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
                                                pin_memory=True)  # note that we're passing the collate function here
 
     epochs = config.epochs
+    print(epochs)
 
     batch_train_losses = []
     batch_val_losses = []
@@ -65,7 +66,7 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
               epoch=epoch))
         # Save checkpoint
         save_checkpoint(epoch, model, optimizer, config.checkpoint)
-
+    print("-----------Finish training------------")
     x = np.arange(1, len(batch_train_losses) + 1)
     fig = plt.figure()
     plt.subplot(121)
@@ -204,7 +205,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     config = Config()
-    config.epochs = args.epochs
+    config.epochs = config.epochs
     config.checkpoint = args.checkpoint
     config.batch_size = args.batch_size
  
@@ -226,7 +227,7 @@ if __name__ == '__main__':
                                     lr=config.lr, momentum=config.momentum, weight_decay=config.weight_decay)
     
     else:
-        checkpoint = torch.load(config.checkpoint)
+        checkpoint = torch.load(config.checkpoint,map_location=config.device)
         start_epoch = checkpoint['epoch'] + 1
         print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
         model = checkpoint['model']

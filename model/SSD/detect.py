@@ -91,17 +91,18 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 
-	# Load model checkpoint
+	# Load model checkpoint]
+	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 	checkpoint = args.checkpoint
 	try:
-		checkpoint = torch.load(checkpoint)
+		checkpoint = torch.load(checkpoint,map_location=device)
 	except:
 		print("Train the model or direct to checkpoint path to start object detection")
 		sys.exit()	
 	start_epoch = checkpoint['epoch'] + 1
 	print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
 	model = checkpoint['model']
-	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+	
 
 	model = model.to(device)
 	model.eval()
@@ -122,7 +123,7 @@ if __name__ == '__main__':
 
 	if args.image == "nothing":
 		for item in os.listdir(dataset_path): 
-			if item.endswith(".jpg"): 
+			if item.endswith(".jpg")or item.endswith(".png") : 
 				
 				img_path = os.path.join(dataset_path, item)
 				original_image = Image.open(img_path, mode='r')

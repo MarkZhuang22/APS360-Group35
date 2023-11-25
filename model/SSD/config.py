@@ -17,7 +17,6 @@ class Config():
         else:
           self.checkpoint = None
         self.batch_size = 16  # batch size
-        #self.iterations = 120000 # number of iterations to train
         self.workers = 0  # number of workers for loading data in the DataLoader
         self.print_freq = 50  # print training status every __ batches
         self.lr = 1e-3  # learning rate
@@ -25,14 +24,13 @@ class Config():
         self.decay_lr_to = 0.1  # decay learning rate to this fraction of the existing learning rate
         self.momentum = 0.9  # momentum
         self.weight_decay = 5e-4  # weight decay
-        #self.grad_clip = None  # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
-        self.epochs = 30
+        self.epochs = 40
         self.heuristic = 0
-        self.mode = FEATURETRANSFER_2 # BASIC or FEATURETRANSFER
+        self.mode = BASIC # BASIC or FEATURETRANSFER or FEATURETRANSFER_2
         #self.mode = FEATURETRANSFER_2
-        self.net_size = 'large'
+        self.net_size = 'small'
         self.base_model = 'vgg'
-        self.chanel_attention = 'NONE' #SE or CBAM or NONE
+        self.chanel_attention = 'SE' #SE or CBAM or NONE
           
         self.fmap_dims = {'conv4_3': 38, 'conv7': 19, 'conv8_2': 10, 'conv9_2': 5, 'conv10_2': 3, 'conv11_2': 1}
         self.obj_scales = {'conv4_3': 0.1, 'conv7': 0.2, 'conv8_2': 0.375, 'conv9_2': 0.55, 'conv10_2': 0.725, 'conv11_2': 0.9}

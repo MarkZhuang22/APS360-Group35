@@ -372,24 +372,25 @@ class MultiBoxLoss(nn.Module):
                     indices = torch.nonzero(mask[k], as_tuple=False)
                     max_indices.append(indices)
 
-                truth_list = boxes[i] 
+
+                truth_list = boxes[i].to(device)
                 
                 if len(_prior_for_each_object) == 1 and len(max_indices[0])==1:
                     # If there is only one index available and it matches the conditions, no need to perform further checks
-                    prior_for_each_object =_prior_for_each_object    
+                    prior_for_each_object =_prior_for_each_object.to(device)    
                 else:
                     prior_size = len(_prior_for_each_object)
                     for j in range(prior_size):
                         truth = truth_list[j]
                         truth_ratio = (truth[2] - truth[0]) / (truth[3] - truth[1])
                         ratio_list = [1, -1000, 2, 0.5, 3, 0.33]
-                        gt_truth_ratios = torch.abs(torch.tensor(ratio_list) - truth_ratio).argmin()
+                        gt_truth_ratios = torch.abs(torch.tensor(ratio_list).to(device) - truth_ratio).argmin()
                         candiddate_list =[]
                         if heuristic != 2:
                             for condidate_idx in max_indices[j]:
                                 prior_xy = self.priors_xy[condidate_idx][0]
                                 prior_ratio = (prior_xy[2]-prior_xy[0]) / (prior_xy[3]-prior_xy[1])
-                                gt_prior_ratios = torch.abs(torch.tensor(ratio_list) - prior_ratio).argmin()
+                                gt_prior_ratios = torch.abs(torch.tensor(ratio_list).to(device) - prior_ratio).argmin()
                                 if(gt_prior_ratios == gt_truth_ratios): # choose pior with same ratio as the ground truth bbox
                                     candiddate_list.append(condidate_idx)
                                 else: # For feature maps that do not have 1/3 or 3, choose 2 instead of 3 and 1/2 instead of 1/3

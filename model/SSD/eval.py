@@ -146,10 +146,10 @@ if __name__ == '__main__':
     # Testing Phase
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     
     checkpoint = args.checkpoint
-    
+    print(checkpoint)
     # Load model checkpoint that is to be evaluated
     try:
-        checkpoint = torch.load(checkpoint)
+        checkpoint = torch.load(checkpoint,map_location=device)
         model = checkpoint['model']
         model = model.to(device)
     except:

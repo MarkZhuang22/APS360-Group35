@@ -18,6 +18,7 @@ def load_data(data_dir = "./", batch_size = 1):
         data_loader = DataLoader(image_dataset, batch_size=batch_size, shuffle=False)
     except:
         print("Please download data")
+        print(data_dir)
         sys.exit()
     return data_loader
 
@@ -43,12 +44,15 @@ def retrieve_gt(path, split, limit=0):
     assert split in ["train", "val", "test"]
     path = os.path.join(path, "FaceMaskDataset")
     dataloader = load_data(data_dir=path)
+    train_path = os.path.join(path,"train")
+    val_path = os.path.join(path,"val")
+    t_len = len(os.listdir(train_path)) // 2
+    v_len = len(os.listdir(val_path)) // 2
     images, bndboxes, boxlabels = [], [], []
 
-    start_index = {"train": 0, "val": 6120, "test": 1660}[split]
-    end_index = start_index + (limit if limit else { "train": 6000, "val": 1000, "test": 1000 }[split])
-    if(split == 'val' or split == 'test' ):
-        end_index = start_index+ 1800 # only load 300 
+
+    start_index = {"train": 0, "val": t_len, "test": t_len}[split]
+    end_index = start_index + (limit if limit else { "train": t_len, "val": v_len, "test": v_len }[split])
     for i in range(start_index, end_index):
         img, bndbox, boxlabel = data_loader(dataloader, i)
         if img is None:

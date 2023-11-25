@@ -357,7 +357,7 @@ def transform(image, boxes, labels, split):
     new_image = image
     new_boxes = boxes
     new_labels = labels
-
+    '''
     if split == 'train':
         new_image = photometric_distort(new_image)
 
@@ -372,7 +372,7 @@ def transform(image, boxes, labels, split):
 
         if random.random() < 0.5:
             new_image, new_boxes = flip(new_image, new_boxes)
-
+    '''
         
     # Resize image to (300, 300) - this also converts absolute boundary coordinates to their fractional form
     new_image, new_boxes = resize(new_image, new_boxes, dims=(300, 300))
