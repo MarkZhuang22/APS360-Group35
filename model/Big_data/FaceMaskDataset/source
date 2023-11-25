@@ -1,5 +1,0 @@
-1.From MAFA dataset and WIDER FACE dataset。
-2. Training set 6120 3006 from MAFA with masks and 3114 from WIDER Face almost without masks
-3. Validation set 1839 1059 from MAFA and 780 from wider face
-4. MAFA http://www.escience.cn/people/geshiming/mafa.html
-5. WIDER Face http://shuoyang1213.me/WIDERFACE/
