@@ -1,12 +1,13 @@
 from torchvision import transforms
+
 from utils import *
 from PIL import Image, ImageDraw, ImageFont
 import argparse
 import sys
 
 
-# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
-def detect(original_image, min_score, max_overlap, top_k, suppress=None):
+# modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
+def detect(original_image, min_score, max_overlap, top_k, suppress=None, demo =0):
 	"""
 	Detect objects in an image with a trained SSD300, and visualize the results.
 
@@ -17,6 +18,26 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
 	:param suppress: classes that you know for sure cannot be in the image or you do not want in the image, a list
 	:return: annotated image, a PIL Image
 	"""
+	
+	if(demo == 1):
+		device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+		#checkpoint = "./checkpoint_ssd_complex_retrain.pth.tar"
+		#checkpoint = "./checkpoint_ssd_lr3_epoach80.pthcheckpoint_ssd_lr3_epoach80.pth.tar"
+		checkpoint = "/Users/jeff/Desktop/APS360/Final_Project/checkpoint_ssd_complex_retrain.pth.tar"
+		try:
+			checkpoint = torch.load(checkpoint,map_location=device)
+		except:
+			print("Train the model or direct to checkpoint path to start object detection")
+			sys.exit()	
+		start_epoch = checkpoint['epoch'] + 1
+		model = checkpoint['model']
+		resize = transforms.Resize((300, 300))
+		to_tensor = transforms.ToTensor()
+		normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+										std=[0.229, 0.224, 0.225])
+
+	model = model.to(device)
+	model.eval()
 
 	# Transform
 	image = normalize(to_tensor(resize(original_image)))
@@ -50,7 +71,7 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
 	# Annotate
 	annotated_image = original_image
 	draw = ImageDraw.Draw(annotated_image)
-	font = ImageFont.truetype("./arial.ttf", 15)
+	font = ImageFont.truetype("./arial.ttf", 12)
 
 	# Suppress specific classes, if needed
 	for i in range(det_boxes.size(0)):
