@@ -102,7 +102,7 @@ def expand(image, boxes, filler):
     :return: expanded image, updated bounding box coordinates
     """
     # Calculate dimensions of proposed expanded (zoomed-out) image
-    random.seed(123)
+
     original_h = image.size(1)
     original_w = image.size(2)
     max_scale = 4
@@ -267,7 +267,7 @@ def photometric_distort(image):
     :param image: image, a PIL Image
     :return: distorted image
     """
-    random.seed(123)
+
     new_image = image
 
     distortions = [FT.adjust_brightness,
@@ -278,7 +278,7 @@ def photometric_distort(image):
     random.shuffle(distortions)
 
     for d in distortions:
-        if random.random() < 0.5:
+        if random.random() < 0.2:
             if d.__name__ is 'adjust_hue':
                 # Caffe repo uses a 'hue_delta' of 18 - we divide by 255 because PyTorch needs a normalized value
                 adjust_factor = random.uniform(-18 / 255., 18 / 255.)

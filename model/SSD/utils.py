@@ -346,7 +346,6 @@ def transform(image, boxes, labels, split):
     :param split: one of 'TRAIN' or 'TEST', since different sets of transformations are applied
     :return: transformed image, transformed bounding box coordinates, transformed labels, transformed difficulties
     """
-    random.seed(123)
     assert split in {'train', 'val','test'}
 
     # Mean and standard deviation of ImageNet data that our base VGG from torchvision was trained on
@@ -357,22 +356,22 @@ def transform(image, boxes, labels, split):
     new_image = image
     new_boxes = boxes
     new_labels = labels
-    '''
+    
     if split == 'train':
         new_image = photometric_distort(new_image)
 
         new_image = FT.to_tensor(new_image)
 
-        if random.random() < 0.5:
+        if random.random() < 0.1:
             new_image, new_boxes = expand(new_image, boxes, filler=mean)
 
         new_image, new_boxes, new_labels = random_crop(new_image, new_boxes, new_labels)
         
         new_image = FT.to_pil_image(new_image)
 
-        if random.random() < 0.5:
+        if random.random() < 0.2:
             new_image, new_boxes = flip(new_image, new_boxes)
-    '''
+    
         
     # Resize image to (300, 300) - this also converts absolute boundary coordinates to their fractional form
     new_image, new_boxes = resize(new_image, new_boxes, dims=(300, 300))

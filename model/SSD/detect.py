@@ -23,7 +23,7 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None, demo =0
 		device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 		#checkpoint = "./checkpoint_ssd_complex_retrain.pth.tar"
 		#checkpoint = "./checkpoint_ssd_lr3_epoach80.pthcheckpoint_ssd_lr3_epoach80.pth.tar"
-		checkpoint = "/Users/jeff/Desktop/APS360/Final_Project/checkpoint_ssd_complex_retrain.pth.tar"
+		checkpoint = "/Users/jeff/Desktop/APS360/Final_Project/checkpoint_ssd_basic_aug_40.pth.tar"
 		try:
 			checkpoint = torch.load(checkpoint,map_location=device)
 		except:
