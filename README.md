@@ -54,11 +54,11 @@ The output of this network includes:
 - `cls_preds`: These are the predictions for the class labels of the detected objects.
 - `bbox_preds`: These are the predictions for the bounding boxes that enclose the detected objects.
 ## Loss Function
-To train the model, a loss function is utilized that considers both the classification and bounding box predictions. In this case, the chosen loss functions are CrossEntropyLoss for the classification task and L1Loss (mean absolute error) for the bounding box prediction task. These loss functions enable the model to optimize both the accuracy of object classification and the precision of bounding box localization.
-SSD matches each anchor box to the ground truth objects with maximum overlapping. However, there could be multiple priors with max IOU, and the traditional SSD randomly selects one. In contrast, our model selects the most suitable prior based on a heuristic function that considers both the closest ratio and Euclidean distance.
+- To train the model, a loss function is utilized that considers both the classification and bounding box predictions. In this case, the chosen loss functions are CrossEntropyLoss for the classification task and L1Loss (mean absolute error) for the bounding box prediction task. These loss functions enable the model to optimize both the accuracy of object classification and the precision of bounding box localization.
+- SSD matches each anchor box to the ground truth objects with maximum overlapping. However, there could be multiple priors with max IOU, and the traditional SSD randomly selects one. In contrast, our model selects the most suitable prior based on a heuristic function that considers both the closest ratio and Euclidean distance.
 ## Perfomance
-Real-time detection if a person is wearing a mask or not
-Process uploaded images using the employed model and make the detection of whether a person is wearing a mask or not within 0.005 seconds. 
-MAP reaches 0.848 for test+validation Dataset
+- Real-time detection if a person is wearing a mask or not
+- Process uploaded images using the employed model and make the detection of whether a person is wearing a mask or not within 0.005 seconds. 
+- MAP reaches 0.848 for test+validation Dataset
 
 
