@@ -63,10 +63,10 @@ The output of this network includes:
 ## Training
 Training history is available at 
 https://colab.research.google.com/drive/1pEJ1jaYgi76UCDGwOxvb6oJZE107p5eE#scrollTo=iOsCf8YfXR0f
-##webAPP Useage
--Download the model parameter file from the provided Google Drive link: https://drive.google.com/file/d/1N4mMSGHH2QeS2ID4zsnKCj4_m-v_HPj_/view?usp=sharing
+## webAPP Useage
+- Download the model parameter file from the provided Google Drive link: https://drive.google.com/file/d/1N4mMSGHH2QeS2ID4zsnKCj4_m-v_HPj_/view?usp=sharing
 
--Replace the "checkpoint" variable in line 25 of the "decet" file with the directory path of the downloaded model parameter file.
+- Replace the "checkpoint" variable in line 25 of the "decet" file with the directory path of the downloaded model parameter file.
 
--If Streamlit is not installed, run the command "pip install streamlit" to install it. Then, run the command "streamlit run app.py" to execute the Streamlit app.
+- If Streamlit is not installed, run the command "pip install streamlit" to install it. Then, run the command "streamlit run app.py" to execute the Streamlit app.
 
